@@ -18,7 +18,7 @@ spec:
         app: laravel-app
     spec:
       containers:
-      - image: buberistovska/blog:latest
+      - image: buberistovska/blog:v
         name: laravel
         ports:
         - containerPort: 8000
