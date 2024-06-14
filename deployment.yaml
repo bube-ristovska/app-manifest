@@ -36,8 +36,6 @@ status: {}
 ---
 apiVersion: v1
 kind: Service
-metadata:
-  name: laravel-service
 spec:
   selector:
     app: laravel-app
@@ -46,3 +44,5 @@ spec:
   - nodePort: 30001
     port: 8000
     targetPort: 5000
+metadata:
+  name: laravel-service
