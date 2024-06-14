@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: laravel-app
+  name: laravel-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: laravel-app
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: laravel-app
+    spec:
+      containers:
+      - image: buberistovska/blog:latest
+        name: laravel
+        resources: {}
+        env_file:
+        - .env
+        volumeMounts:
+        - name: laravel-storage
+          mountPath: /var/www/html
+      - image: mysql:8.0
+        name: db
+        env:
+        - name: MYSQL_DATABASE
+          value: laravel
+        - name: MYSQL_ROOT_PASSWORD
+          value: password
+        ports:
+        - containerPort: 3306
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: laravel-service
+spec:
+  selector:
+    app: laravel-app
+  type: NodePort
+  ports:
+  - nodePort: 30001
+    port: 8000
+    targetPort: 5000
