@@ -45,6 +45,6 @@ spec:
   ports:
   - nodePort: 30001
     port: 8000
-    targetPort: 5000
+    targetPort: 8000
 metadata:
   name: laravel-service
