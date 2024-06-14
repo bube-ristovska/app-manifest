@@ -16,6 +16,8 @@ spec:
       creationTimestamp: null
       labels:
         app: laravel-app
+      ports:
+        - containerPort: 8000
     spec:
       containers:
       - image: buberistovska/blog:latest
