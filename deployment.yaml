@@ -18,14 +18,14 @@ spec:
         app: laravel-app
     spec:
       containers:
-      - image: buberistovska/blog:v
+      - image: buberistovska/blog:v3
         name: laravel
         ports:
         - containerPort: 8000
         resources: {}
         env_file:
         - .env
-      - image: mysql:8.0
+      - image: buberistovska/mysql:latest
         name: db
         env:
         - name: MYSQL_DATABASE
