@@ -23,9 +23,6 @@ spec:
         resources: {}
         env_file:
         - .env
-        volumeMounts:
-        - name: laravel-storage
-          mountPath: /var/www/html
       - image: mysql:8.0
         name: db
         env:
