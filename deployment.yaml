@@ -1,50 +1,149 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: laravel
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: laravel-config
+data:
+  DB_CONNECTION: mysql
+  DB_HOST: db
+  DB_PORT: "3306"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: laravel-secret
+  namespace: laravel
+type: Opaque
+data:
+  DB_DATABASE: bGFyYXZlbA== 
+  DB_USERNAME: bGFyYXZlbA==  
+  DB_PASSWORD: cGFzc3dvcmQ=  
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
-  labels:
-    app: laravel-app
   name: laravel-app
+  namespace: laravel
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: laravel-app
-  strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: laravel-app
     spec:
       containers:
-      - image: buberistovska/blog:v11
-        name: laravel
-        ports:
-        - containerPort: 8000
-        resources: {}
-        env_file:
-        - .env
-      - image: buberistovska/mysql:v11
-        name: db
-        env:
-        - name: MYSQL_DATABASE
-          value: laravel
-        - name: MYSQL_ROOT_PASSWORD
-          value: password
-        ports:
-        - containerPort: 3306
-status: {}
----
+        - name: laravel
+          image: buberistovska/blog:v11
+          envFrom:
+            - configMapRef:
+                name: laravel-config
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: laravel-persistent-storage
+              mountPath: /var/www/html
+      volumes:
+        - name: laravel-persistent-storage
+          emptyDir: {}
+--- 
 apiVersion: v1
 kind: Service
+metadata:
+  name: laravel-service
+  namespace: laravel
 spec:
   selector:
     app: laravel-app
-  type: NodePort
   ports:
-  - nodePort: 30001
-    port: 8000
-    targetPort: 8000
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: laravel-service
+  name: laravel-ingress
+  namespace: laravel
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+    - host: bube.blog.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: laravel-service
+                port:
+                  number: 80
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+  namespace: laravel
+type: Opaque
+data:
+  MYSQL_ROOT_PASSWORD: cGFzc3dvcmQ=
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: laravel
+data:
+  my.cnf: |
+    [mysqld]
+    max_connections=100
+    innodb_buffer_pool_size=2G
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: laravel
+spec:
+  serviceName: mysql
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: buberistovska/mysql:v11
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_ROOT_PASSWORD
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-persistent-storage
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi  
+
+
