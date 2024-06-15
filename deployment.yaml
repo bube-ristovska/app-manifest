@@ -101,6 +101,19 @@ data:
     max_connections=100
     innodb_buffer_pool_size=2G
 ---
+apiVersion: v1
+kind: Service   # Add MySQL Service definition
+metadata:
+  name: mysql-service
+  namespace: laravel
+spec:
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+  selector:
+    app: mysql
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
