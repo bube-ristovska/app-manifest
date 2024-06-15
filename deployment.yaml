@@ -45,13 +45,7 @@ spec:
             - configMapRef:
                 name: laravel-config
           ports:
-            - containerPort: 80
-          volumeMounts:
-            - name: laravel-persistent-storage
-              mountPath: /var/www/html
-      volumes:
-        - name: laravel-persistent-storage
-          emptyDir: {}
+            - containerPort: 8000
 --- 
 apiVersion: v1
 kind: Service
