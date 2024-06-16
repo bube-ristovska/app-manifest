@@ -19,9 +19,8 @@ metadata:
   namespace: laravel
 type: Opaque
 data:
-  DB_DATABASE: bGFyYXZlbA== 
   DB_USERNAME: bGFyYXZlbA==  
-  DB_PASSWORD: cGFzc3dvcmQ=  
+  DB_PASSWORD: bGFyYXZlbA== 
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -102,7 +101,7 @@ data:
     innodb_buffer_pool_size=2G
 ---
 apiVersion: v1
-kind: Service   # Add MySQL Service definition
+kind: Service
 metadata:
   name: mysql-service
   namespace: laravel
