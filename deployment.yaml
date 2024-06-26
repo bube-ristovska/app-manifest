@@ -21,6 +21,7 @@ type: Opaque
 data:
   DB_USERNAME: bGFyYXZlbA==
   DB_PASSWORD: bGFyYXZlbA== 
+  APP_KEY: YmFzZTY0OmVNMlNxTUsyRGdiR0pDclM4Q0JMWWJiTE9VWVRLdUlwN2VZSEZ2THdKU2c9Cg==
 ---
 apiVersion: apps/v1
 kind: Deployment
