@@ -51,7 +51,7 @@ spec:
               php artisan db:seed --force
       containers:
         - name: laravel
-          image: buberistovska/blog:v14
+          image: buberistovska/blog:v15
           envFrom:
             - configMapRef:
                 name: laravel-config
@@ -143,7 +143,7 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: buberistovska/mysql:v14
+          image: buberistovska/mysql:v15
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
