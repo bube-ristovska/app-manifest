@@ -19,7 +19,7 @@ metadata:
   namespace: laravel
 type: Opaque
 data:
-  DB_USERNAME: bGFyYXZlbA==  
+  DB_USERNAME: bGFyYXZlbA==
   DB_PASSWORD: bGFyYXZlbA== 
 ---
 apiVersion: apps/v1
@@ -37,6 +37,18 @@ spec:
       labels:
         app: laravel-app
     spec:
+    initContainers:
+        - name: init-setup
+          image: ubuntu:latest  
+          command:
+            - /bin/sh
+            - -c
+            - |
+              apt-get update && apt-get install -y nano  
+              cp .env.example .env  
+              php artisan key:generate  
+              php artisan migrate --force  
+              php artisan db:seed --force
       containers:
         - name: laravel
           image: buberistovska/blog:v14
