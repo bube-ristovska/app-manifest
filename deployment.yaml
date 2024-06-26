@@ -39,7 +39,7 @@ spec:
     spec:
       containers:
         - name: laravel
-          image: buberistovska/blog:v17
+          image: buberistovska/blog:v18
           envFrom:
             - configMapRef:
                 name: laravel-config
@@ -145,7 +145,7 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: buberistovska/mysql:v17
+          image: buberistovska/mysql:v18
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
