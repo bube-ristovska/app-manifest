@@ -43,6 +43,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: laravel-config
+            - secretRef:
+                name: laravel-secret 
           ports:
             - containerPort: 80
 --- 
