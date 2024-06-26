@@ -37,18 +37,6 @@ spec:
       labels:
         app: laravel-app
     spec:
-      initContainers:  # Correct indentation here
-        - name: init-setup
-          image: ubuntu:latest  
-          command:
-            - /bin/sh
-            - -c
-            - |
-              apt-get update && apt-get install -y nano  
-              cp .env.example .env  
-              php artisan key:generate  
-              php artisan migrate --force  
-              php artisan db:seed --force
       containers:
         - name: laravel
           image: buberistovska/blog:v15
