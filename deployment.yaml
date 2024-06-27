@@ -40,7 +40,7 @@ spec:
     spec:
       containers:
         - name: laravel
-          image: buberistovska/blog:v19
+          image: buberistovska/blog:v20
           envFrom:
             - configMapRef:
                 name: laravel-config
@@ -146,7 +146,7 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: buberistovska/mysql:v19
+          image: buberistovska/mysql:v20
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
