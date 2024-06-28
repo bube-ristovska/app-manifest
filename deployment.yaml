@@ -116,18 +116,6 @@ spec:
   selector:
     app: mysql
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mysql-pvc
-  namespace: laravel
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -135,7 +123,7 @@ metadata:
   namespace: laravel
 spec:
   serviceName: mysql
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: mysql
@@ -146,8 +134,10 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: buberistovska/mysql:v20
+          image: mcr.microsoft.com/mssql/server
           env:
+          - name: ACCEPT_EULA
+          value: "Y"
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -156,11 +146,24 @@ spec:
           ports:
             - containerPort: 3306
           volumeMounts:
-            - name: dbdata
-              mountPath: /var/lib/mysql
-      volumes:
-        - name: dbdata
-          persistentVolumeClaim:
-            claimName: mysql-pvc
+          - name: mssql-data
+            mountPath: /var/opt/mssql/data
+          - name: mssql-log
+            mountPath: /var/opt/mssql/log
+  volumeClaimTemplates:
+  - metadata:
+      name: mssql-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+  - metadata:
+      name: mssql-log
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
 
 
